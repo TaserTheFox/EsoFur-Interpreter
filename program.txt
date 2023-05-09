@@ -1,0 +1,11 @@
+OwO What's This?
+Notices Your Input
+Boop The User For Input
+Input Nuzzles "1"
+Howl 0
+Nuzzles 5
+Marks "1"
+*Starts Roleplaying*
+Howl 1
+*Stops Roleplaying Because Of Input*
+QwQ
