@@ -253,12 +253,8 @@ class EsoFurCompiler:
 
     def _do_maths(self, line, keyword, operation):
         var_1, var_2 = map(lambda x: x.strip(), line.split(keyword))
-        if var_1 not in self.symbol_table.keys():
-            raise _undeclared_var(var_1)
-        if var_2 not in self.symbol_table.keys():
-            raise _undeclared_var(var_2)
-        num_1 = self.symbol_table[var_1]
-        num_2 = self.symbol_table[var_2]
+        num_1 = self._parse_value(var_1)
+        num_2 = self._parse_value(var_2)
         if operation == '+':
             num_1 += num_2
         if operation == '-':
