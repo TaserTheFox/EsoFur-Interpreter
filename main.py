@@ -222,6 +222,8 @@ class EsoFurCompiler:
     def _assign(self, value_str):
         if value_str.isdigit():
             return int(value_str)
+        if '"' in value_str:
+            return value_str[value_str.find('"')+1:value_str.rfind('"')]
         elif value_str in self.symbol_table:
             return self.symbol_table[value_str]
         else:
