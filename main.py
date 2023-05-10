@@ -1,3 +1,5 @@
+import math
+
 from exceptions import _noEnd,_undeclared_var,_caperror,_jump_error,_noLabel,_noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
@@ -9,7 +11,7 @@ class EsoFurCompiler:
         i = 0
         built=False
         if lines.count("Maws") != lines.count("Paws"):
-            raise self._unmatchedComment()
+            raise _unmatchedComment()
         while i < len(lines):
             line = lines[i].strip()
 
@@ -17,7 +19,7 @@ class EsoFurCompiler:
             if not line:
                 i+=1
                 continue
-            
+
             #check if program should run at all
             if line == "OwO What's This?":
                 built=True
@@ -38,14 +40,14 @@ class EsoFurCompiler:
             if line.startswith('Muzzles'):
                 i+=1
                 continue
-            
+
             if line == "Maws":
                 if self._in_comment == True:
                     raise _unmatchedComment()
                 self._in_comment = True
                 i+=1
                 continue
-            
+
             if line == "Paws":
                 if self._in_comment == False:
                     raise _unmatchedComment()
@@ -56,7 +58,7 @@ class EsoFurCompiler:
             if self._in_comment == True:
                 i+=1
                 continue
-            
+
             #marking a line
             if line.startswith("Marks"):
                 i+=1
@@ -157,6 +159,42 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
+            # maths
+            if 'Inflates By' in line:
+                self._do_maths(line, "Inflates By", "+")
+                i+=1
+                continue
+
+            if 'Pays' in line:
+                self._do_maths(line, 'Pays', '-')
+                i += 1
+                continue
+
+            if 'Breeds By' in line:
+                self._do_maths(line, 'Breeds By', '*')
+                i += 1
+                continue
+
+            if 'Baps' in line:
+                self._do_maths(line, 'Baps', '/')
+                i += 1
+                continue
+
+            if 'Deflates By' in line:
+                self._do_maths(line, 'Deflates By', '%')
+                i += 1
+                continue
+
+            if 'Gets Vored By' in line:
+                self._do_maths(line, 'Gets Vored By', 'l')
+                i += 1
+                continue
+
+            if 'Hyper-Inflates By' in line:
+                self._do_maths(line, 'Hyper-Inflates By', '^')
+                i += 1
+                continue
+
         # Check for unclosed multiline comments
         #if self._in_comment:
         #    print("Error: Unclosed multiline comment!")
@@ -188,7 +226,7 @@ class EsoFurCompiler:
             return self.symbol_table[value_str]
         else:
             return value_str
-        
+
     def _parse_value(self, value_str):
         if value_str.isdigit():
             return int(value_str)
@@ -198,7 +236,7 @@ class EsoFurCompiler:
             return eval(value_str, {}, self.symbol_table)
         except:
             raise _jump_error()
-        
+
     def _cast_value(self, value, type_name):
         if type_name == 'Int':
             return int(value)
@@ -212,8 +250,32 @@ class EsoFurCompiler:
             return set(value)
         raise _castingFail()
         #print(f"Error: Invalid type: {type_name}")
-    
-    
+
+    def _do_maths(self, line, keyword, operation):
+        var_1, var_2 = map(lambda x: x.strip(), line.split(keyword))
+        if var_1 not in self.symbol_table.keys():
+            raise _undeclared_var(var_1)
+        if var_2 not in self.symbol_table.keys():
+            raise _undeclared_var(var_2)
+        num_1 = self.symbol_table[var_1]
+        num_2 = self.symbol_table[var_2]
+        if operation == '+':
+            num_1 += num_2
+        if operation == '-':
+            num_1 -= num_2
+        if operation == '*':
+            num_1 *= num_2
+        if operation == '/':
+            num_1 = num_2 / num_1
+        if operation == '%':
+            num_1 %= num_2
+        if operation == 'l':
+            num_1 = math.log(num_1, num_2)
+        if operation == '^':
+            num_1 **= num_2
+        self.symbol_table[var_1] = num_1
+
+
 with open("program.txt") as file: # Use file to refer to the file object
     code = file.read()
     print(code)
