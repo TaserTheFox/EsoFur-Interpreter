@@ -88,7 +88,7 @@ class EsoFurCompiler:
 
             #var clearing
             if line.endswith("Gets Canceled"):
-                var = line.split("Gets Canceled")
+                var = line.removesuffix(" Gets Canceled")
                 if var.startswith('"') or var.endswith('"'):
                     raise _clearError(var)
                 if var.isdigit() == True:
@@ -101,8 +101,7 @@ class EsoFurCompiler:
 
             # String joining
             if line.startswith("Look!") and "Joined The" in line:
-                line =line.split("Look!")
-                add, original1 = line.split("Joined The")
+                add, original1 = line[line.find("Look!")+5:line.find("Joined The")], line[line.find("Joined The")+11:]
                 add = str(self._parse_value(add.strip()))
                 original = str(self._parse_value(original1.strip()))
                 self.symbol_table[original1] = original+add
@@ -148,7 +147,7 @@ class EsoFurCompiler:
 
             # Print
             if line.startswith('Howl'):
-                var_name = line.split('Howl')
+                var_name = line.removeprefix("Howl")
                 value = self._parse_value(var_name.strip())
                 print(value)
                 i+=1
@@ -156,11 +155,13 @@ class EsoFurCompiler:
 
             if line.startswith("Awoo"):
                 var = line.split("Awoo")[1]
-                value = self._parse_value(var_name.strip())
+                value = self._parse_value(var.strip())
                 if type(value)==int:
-                    print(char(value))
+                    print(chr(value))
                 else:
                     print(value)
+                i += 1
+                continue
 
               # Ask user for input
             if line.startswith('Boop The User For'):
@@ -268,7 +269,7 @@ class EsoFurCompiler:
         try:
             return eval(value_str, {}, self.symbol_table)
         except:
-            raise _jump_error()
+            raise _jump_error("a", "b")
 
     def _cast_value(self, value, type_name):
         if type_name == 'Int':
