@@ -1,6 +1,7 @@
-import math
+import math,importlib
 
-from exceptions import _noEnd,_undeclared_var,_caperror,_jump_error,_noLabel,_noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
+from exceptions import _importError,_noEnd,_undeclared_var,_caperror,_jump_error,_noLabel
+from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
         self.symbol_table = {}
@@ -68,6 +69,22 @@ class EsoFurCompiler:
             if line.istitle()==False:
                 raise _caperror()
 
+            #importing Esofur modules (W.I.P)
+            if line.startswith("Drag"):
+                parse=line.split() #drag [function] from [module]
+                if parse[2]!="From":
+                    raise _caperror()
+                try:
+                    if parse[1]=="Everything":
+                        importlib.import_module(parse[3]) 
+                        #i need to assign the import function to a variable,
+                        #but the variable has to be the module itself, and not
+                        #something fixed.
+                    else:
+                        importlib.__import__(parse[3], globals=None, locals=None, fromlist=parse[1], level=0)
+                except:
+                    raise _importError(parse[3])
+                
             # Variable declaration
             if line.startswith('Notices Your'):
                 var_name = line.split(' ')[2]

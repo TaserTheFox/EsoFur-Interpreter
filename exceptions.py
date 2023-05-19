@@ -52,3 +52,10 @@ class _castingFail(Exception):
 class _unmatchedComment(Exception):
     def __str__(self):
         return "\033[38;5;14mWHICH IS BETTER? PAWS OR MAWS?"
+
+class _importError(Exception):
+    def __init__(self, module):
+        self.module=module
+      
+    def __str__(self):
+        return f"\033[38;5;14mUNKNOWN MODULE: {self.module}"
