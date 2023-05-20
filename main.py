@@ -1,6 +1,6 @@
 import math,sys
 
-from exceptions import _alreadyImported,_importError,_noEnd,_undeclared_var,_caperror,_jump_error,_noLabel
+from exceptions import _undefinedKeyword,_alreadyImported,_importError,_noEnd,_undeclared_var,_caperror,_jump_error,_noLabel
 from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
@@ -13,6 +13,7 @@ class EsoFurCompiler:
         i = 0
         built=False
         module=''
+        global done
         done = sys.exit  # Create an alias for sys.exit()
         if lines.count("Maws") != lines.count("Paws"):
             raise _unmatchedComment()
@@ -94,21 +95,17 @@ class EsoFurCompiler:
                         self.imported += [parse[3]+'.'+parse[1]]
                 except:
                     raise _importError(parse[3])
+                i+=1
+                continue
+
             try:
-                exec(module)
+                exec(module,globals(),locals())
             except SystemExit:
                 i+=1
                 continue
             except:
                 print("SOMETHING WENT HORRIBLY WRONG")
                 quit()
-
-
-
-
-
-
-
 
             # Variable declaration
             if line.startswith('Notices Your'):
@@ -236,6 +233,9 @@ class EsoFurCompiler:
                 self._do_maths(line, 'Hyper-Inflates By', '^')
                 i += 1
                 continue
+
+            #UNDEFINED INSTRUCTIONS
+            raise _undefinedKeyword(self.imported,line,self.symbol_table)
 
         # Check for unclosed multiline comments
         #if self._in_comment:

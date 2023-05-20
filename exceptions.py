@@ -63,5 +63,11 @@ class _importError(Exception):
 class _alreadyImported(Exception):
     def __str__(self):
         return "\033[38;5;14mYOU ALREADY DRAGGED IT! WHY WASTE EFFORT?"
-
-        
+    
+class _undefinedKeyword(Exception):
+    def __init__(self, imported,line,symbols):
+        self.imported=imported
+        self.line=line
+        self.symbol_table=symbols
+    def __str__(self):
+        return f"\033[38;5;14mUNKNOWN KEYWORD {self.line}: DEBUG CODE!\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"

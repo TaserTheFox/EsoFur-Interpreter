@@ -2,8 +2,10 @@
 
 
 #BEGIN Bird
-if line.startswith("BIRD"):
+if line.startswith("Bird"):
     print("HOLY SHIT A BIRD")
     done()
-    
+if line.startswith("Egg"):
+    print("EGG")
+    done()
 #END Bird

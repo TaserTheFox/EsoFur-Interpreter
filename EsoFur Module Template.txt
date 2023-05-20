@@ -1,0 +1,16 @@
+Heya! thank you for thinking about creating your own module for Esofur!
+since the base interpretor is written in Python, youll have to write the module in Python aswell,
+
+Some things to keep in mind!
+self.symbol_table is something
+please do done() at the end of each "if" block
+
+
+
+Template below
+----------------------
+
+if line.startswith("KEYWORD HERE"):
+    print()
+    #DO SOMETHING
+    done()
