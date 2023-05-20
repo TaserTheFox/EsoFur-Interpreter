@@ -1,16 +1,19 @@
-import math,importlib
+import math,sys
 
-from exceptions import _importError,_noEnd,_undeclared_var,_caperror,_jump_error,_noLabel
+from exceptions import _alreadyImported,_importError,_noEnd,_undeclared_var,_caperror,_jump_error,_noLabel
 from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
         self.symbol_table = {}
         self._in_comment = False
         #self._in_loop==False
+        self.imported = []
     def compile(self, code):
         lines = code.split('\n')
         i = 0
         built=False
+        module=''
+        done = sys.exit  # Create an alias for sys.exit()
         if lines.count("Maws") != lines.count("Paws"):
             raise _unmatchedComment()
         while i < len(lines):
@@ -69,6 +72,10 @@ class EsoFurCompiler:
             if line.istitle()==False:
                 raise _caperror()
 
+
+
+
+
             #importing Esofur modules (W.I.P)
             if line.startswith("Drag"):
                 parse=line.split() #drag [function] from [module]
@@ -76,15 +83,33 @@ class EsoFurCompiler:
                     raise _caperror()
                 try:
                     if parse[1]=="Everything":
-                        importlib.import_module(parse[3]) 
-                        #i need to assign the import function to a variable,
-                        #but the variable has to be the module itself, and not
-                        #something fixed.
+                        module += '\n' + self.grabfile(parse[3])
+                        if parse[3] in self.imported:
+                            raise _alreadyImported()
+                        self.imported += [parse[3]]
                     else:
-                        importlib.__import__(parse[3], globals=None, locals=None, fromlist=parse[1], level=0)
+                        module += '\n' + self.grabfile(parse[3],parse[1])
+                        if parse[3]+'.'+parse[1] in self.imported:
+                            raise _alreadyImported()
+                        self.imported += [parse[3]+'.'+parse[1]]
                 except:
                     raise _importError(parse[3])
-                
+            try:
+                exec(module)
+            except SystemExit:
+                i+=1
+                continue
+            except:
+                print("SOMETHING WENT HORRIBLY WRONG")
+                quit()
+
+
+
+
+
+
+
+
             # Variable declaration
             if line.startswith('Notices Your'):
                 var_name = line.split(' ')[2]
@@ -290,8 +315,16 @@ class EsoFurCompiler:
             num_1 **= num_2
         self.symbol_table[var_1] = num_1
 
+    def grabfile(self, module, *word):
+        with open(module+'.EsoMod', "r") as file:
+            source_code = file.read()
+        if len(word)==0:
+            return source_code
+        else:
+            return 
 
-with open("program.txt") as file: # Use file to refer to the file object
+
+with open("program.Eso") as file: # Use file to refer to the file object
     code = file.read()
     print(code)
     print('---------------------')

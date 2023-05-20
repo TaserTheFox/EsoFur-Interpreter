@@ -1,0 +1,9 @@
+#this file will contain functions concerning binary and hexadecimal
+
+
+#BEGIN Bird
+if line.startswith("BIRD"):
+    print("HOLY SHIT A BIRD")
+    done()
+    
+#END Bird

@@ -59,3 +59,9 @@ class _importError(Exception):
       
     def __str__(self):
         return f"\033[38;5;14mUNKNOWN MODULE: {self.module}"
+
+class _alreadyImported(Exception):
+    def __str__(self):
+        return "\033[38;5;14mYOU ALREADY DRAGGED IT! WHY WASTE EFFORT?"
+
+        
