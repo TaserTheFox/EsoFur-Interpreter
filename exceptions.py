@@ -24,7 +24,7 @@ class _jump_error(Exception):
         self.symbol_table=symbol_table
 
       def __str__(self):
-        return f"\033[38;5;14mSOMETHING WENT WRONG EVALUATING: {self.cond}\nHERE IS THE CURRENT SYMBOL TABLE:\n {self.symbol_table}"
+        return f"\033[38;5;14mSOMETHING WENT WRONG EVALUATING: {self.cond}\nHERE IS THE CURRENT SYMBOL TABLE:\n{self.symbol_table}"
 
 class _noLabel(Exception):
     def __init__(self, label):
