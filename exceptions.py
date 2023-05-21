@@ -24,7 +24,7 @@ class _jump_error(Exception):
         self.symbol_table=symbol_table
 
       def __str__(self):
-        return f"\033[38;5;14mSOMETHING WENT WRONG EVALUATING: {self.cond}\nHERE IS THE CURRENT SYMBOL TABLE:\n {self.symbol_table}"
+        return f"\033[38;5;14mSOMETHING WENT WRONG EVALUATING: {self.cond}\nHERE IS THE CURRENT SYMBOL TABLE:\n{self.symbol_table}"
 
 class _noLabel(Exception):
     def __init__(self, label):
@@ -52,3 +52,18 @@ class _castingFail(Exception):
 class _unmatchedComment(Exception):
     def __str__(self):
         return "\033[38;5;14mWHICH IS BETTER? PAWS OR MAWS?"
+
+class _clearError(Exception):
+    def __init__(self, var):
+        self.var=var
+
+    def __str__(self):
+        return f"\033[38;5;14mCANNOT CLEAR A {type(self.var).upper()}! ({self.var})"
+    
+class _outOfScope(Exception):
+    def __str__(self):
+        return f"\033[38;5;14mLEASH TOO SHORT"
+
+class _furpileDuplicate(Exception):
+    def __str__(self):
+        return f"\033[38;5;14mWHO'S THE FAKE ONE?"

@@ -1,6 +1,6 @@
 import math
 
-from exceptions import _noEnd,_undeclared_var,_caperror,_jump_error,_noLabel,_noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
+from exceptions import _noEnd,_undeclared_var,_caperror,_jump_error,_noLabel,_noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment, _clearError
 class EsoFurCompiler:
     def __init__(self):
         self.symbol_table = {}
@@ -86,6 +86,28 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
+            #var clearing
+            if line.endswith("Gets Canceled"):
+                var = line.removesuffix(" Gets Canceled")
+                if var.startswith('"') or var.endswith('"'):
+                    raise _clearError(var)
+                if var.isdigit() == True:
+                    raise _clearError(var)
+                if var not in self.symbol_table:
+                    raise _undeclared_var(var)
+                self.symbol_table[var] = None
+                i+=1
+                continue
+
+            # String joining
+            if line.startswith("Look!") and "Joined The" in line:
+                add, original1 = line[line.find("Look!")+5:line.find("Joined The")], line[line.find("Joined The")+11:]
+                add = str(self._parse_value(add.strip()))
+                original = str(self._parse_value(original1.strip()))
+                self.symbol_table[original1] = original+add
+                i+=1 
+                continue
+        
             # Jumps
             if 'Nuzzles' in line:
                 if line.startswith("Nuzzles")==False:
@@ -125,10 +147,20 @@ class EsoFurCompiler:
 
             # Print
             if line.startswith('Howl'):
-                var_name = line.split(' ')[1]
-                value = self._assign(var_name.strip())
+                var_name = line.removeprefix("Howl")
+                value = self._parse_value(var_name.strip())
                 print(value)
                 i+=1
+                continue
+
+            if line.startswith("Awoo"):
+                var = line.split("Awoo")[1]
+                value = self._parse_value(var.strip())
+                if type(value)==int:
+                    print(chr(value))
+                else:
+                    print(value)
+                i += 1
                 continue
 
               # Ask user for input
@@ -237,7 +269,7 @@ class EsoFurCompiler:
         try:
             return eval(value_str, {}, self.symbol_table)
         except:
-            raise _jump_error()
+            raise _jump_error("a", "b")
 
     def _cast_value(self, value, type_name):
         if type_name == 'Int':
