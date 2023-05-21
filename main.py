@@ -1,13 +1,12 @@
 import math,sys
-
-from exceptions import _undefinedKeyword,_alreadyImported,_importError,_noEnd,_undeclared_var,_caperror,_jump_error,_noLabel
+from exceptions import _debug,_undefinedKeyword,_alreadyImported,_importError,_noEnd,_undeclaredVar,_capError,_jumpError,_noLabel
 from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
         self.symbol_table = {}
-        self._in_comment = False
-        #self._in_loop==False
+        self.in_comment = False
         self.imported = []
+        self.imported_local=[]
     def compile(self, code):
         lines = code.split('\n')
         i = 0
@@ -25,7 +24,7 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
-            #check if program should run at all
+            # Check if program should run at all
             if line == "OwO What's This?":
                 built=True
                 i+=1
@@ -34,7 +33,7 @@ class EsoFurCompiler:
             elif not built:
                 exit(0)
 
-            #end of program
+            # End of program
             if line=="QwQ":
                 exit("\033[38;5;15mfinished")
 
@@ -47,16 +46,16 @@ class EsoFurCompiler:
                 continue
 
             if line == "Maws":
-                if self._in_comment == True:
+                if self.in_comment == True:
                     raise _unmatchedComment()
-                self._in_comment = True
+                self.in_comment = True
                 i+=1
                 continue
 
             if line == "Paws":
-                if self._in_comment == False:
+                if self.in_comment == False:
                     raise _unmatchedComment()
-                self._in_comment = False
+                self.in_comment = False
                 i+=1
                 continue
 
@@ -64,48 +63,53 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
-            #marking a line
+            # Marking a line
             if line.startswith("Marks"):
                 i+=1
                 continue
 
-            #syntax check
+            # Syntax check
             if line.istitle()==False:
-                raise _caperror()
-
-
-
-
-
-            #importing Esofur modules (W.I.P)
+                raise _capError()
+            
+            # Importing Esofur modules
             if line.startswith("Drag"):
                 parse=line.split() #drag [function] from [module]
                 if parse[2]!="From":
-                    raise _caperror()
+                    raise _capError()
                 try:
                     if parse[1]=="Everything":
-                        module += '\n' + self.grabfile(parse[3])
                         if parse[3] in self.imported:
                             raise _alreadyImported()
+                        module += '\n' + self.grabfile(parse[3])
                         self.imported += [parse[3]]
                     else:
-                        module += '\n' + self.grabfile(parse[3],parse[1])
-                        if parse[3]+'.'+parse[1] in self.imported:
+                        if parse[3]+'.'+parse[1] in self.imported_local:
                             raise _alreadyImported()
-                        self.imported += [parse[3]+'.'+parse[1]]
+                        if parse[3] in self.imported_local:
+                            raise _alreadyImported()
+                        module += '\n' + self.grabfile(parse[3],parse[1])
+                        self.imported_local += [parse[3]+'.'+parse[1]]
+                        self.imported += [parse[3]]
+                except _alreadyImported:
+                    raise _alreadyImported()
                 except:
                     raise _importError(parse[3])
                 i+=1
                 continue
 
             try:
+                parse_value=self._parse_value
+                for mod in self.imported_local:
+                    if line.startswith(mod):
+                        line=line.split('.')[1]
+                        break
                 exec(module,globals(),locals())
             except SystemExit:
                 i+=1
                 continue
             except:
-                print("SOMETHING WENT HORRIBLY WRONG")
-                quit()
+                quit("SOMETHING WENT HORRIBLY WRONG")
 
             # Variable declaration
             if line.startswith('Notices Your'):
@@ -119,7 +123,7 @@ class EsoFurCompiler:
                 value, var_name = line.split('Pounces On')
                 var_name = var_name.strip()
                 if var_name not in self.symbol_table:
-                    raise _undeclared_var(var_name)
+                    raise _undeclaredVar(var_name)
                 value = self._assign(value.strip())
                 self.symbol_table[var_name] = value
                 i+=1
@@ -170,7 +174,7 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
-              # Ask user for input
+            # Ask user for input
             if line.startswith('Boop The User For'):
                 text=line.split()
                 var_name = text[4]
@@ -198,7 +202,7 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
-            # maths
+            # Maths
             if 'Inflates By' in line:
                 self._do_maths(line, "Inflates By", "+")
                 i+=1
@@ -234,12 +238,8 @@ class EsoFurCompiler:
                 i += 1
                 continue
 
-            #UNDEFINED INSTRUCTIONS
+            # UNDEFINED INSTRUCTIONS
             raise _undefinedKeyword(self.imported,line,self.symbol_table)
-
-        # Check for unclosed multiline comments
-        #if self._in_comment:
-        #    print("Error: Unclosed multiline comment!")
 
     def _find_label_index(self, lines, label):
         for i, line in enumerate(lines):
@@ -259,7 +259,6 @@ class EsoFurCompiler:
                 else:
                     loop_count-=1
         raise _noStart()
-        #print("Error: Loop start not found")
 
     def _assign(self, value_str):
         if value_str.isdigit():
@@ -279,7 +278,7 @@ class EsoFurCompiler:
         try:
             return eval(value_str, {}, self.symbol_table)
         except:
-            raise _jump_error()
+            raise _jumpError()
 
     def _cast_value(self, value, type_name):
         if type_name == 'Int':
@@ -293,7 +292,6 @@ class EsoFurCompiler:
         if type_name == 'Furpile':
             return set(value)
         raise _castingFail()
-        #print(f"Error: Invalid type: {type_name}")
 
     def _do_maths(self, line, keyword, operation):
         var_1, var_2 = map(lambda x: x.strip(), line.split(keyword))
@@ -321,10 +319,13 @@ class EsoFurCompiler:
         if len(word)==0:
             return source_code
         else:
-            return 
+            source_code=source_code.split("#NEXT")
+            for block in source_code:
+                    if block.startswith("\n#"+word[0]):
+                        return block
 
 
-with open("program.Eso") as file: # Use file to refer to the file object
+with open("program.Eso") as file:
     code = file.read()
     print(code)
     print('---------------------')

@@ -1,11 +1,10 @@
-#this file will contain functions concerning binary and hexadecimal
-
-
-#BEGIN Bird
+#NEXT
+#Bird
 if line.startswith("Bird"):
     print("HOLY SHIT A BIRD")
     done()
+#NEXT
+#Egg
 if line.startswith("Egg"):
-    print("EGG")
+    print(self._parse_value(line.split()[1]))
     done()
-#END Bird

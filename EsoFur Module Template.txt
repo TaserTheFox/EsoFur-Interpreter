@@ -3,10 +3,26 @@ since the base interpretor is written in Python, youll have to write the module 
 
 Some things to keep in mind!
 self.symbol_table is something
+to get the value from a variable, do parse_value([variable])
 please do done() at the end of each "if" block
 
+every new keyword must start with "#NEXT" followed by a commended out line containing the keyword (see example)
 
+The file extension must be .EsoMod
 
+Example:
+---------------------
+#NEXT
+#Bird
+if line.startswith("Bird"):
+    print("HOLY SHIT A BIRD")
+    done()
+#NEXT
+#Egg
+if line.startswith("Egg"):
+    print(self._parse_value(line.split()[1]))
+    done()
+----------------------
 Template below
 ----------------------
 

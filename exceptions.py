@@ -1,4 +1,4 @@
-class _NotImplemented(Exception):
+class _notImplemented(Exception):
     def __str__(self):
         return 'Not implemented'
 
@@ -6,7 +6,7 @@ class _noEnd(Exception):
     def __str__(self):
         return '\033[38;5;14mUNENDING PAIN AND SUFFERING'
 
-class _undeclared_var(Exception):
+class _undeclaredVar(Exception):
     def __init__(self, var):
         super().__init__()
         self.var = var
@@ -14,11 +14,11 @@ class _undeclared_var(Exception):
     def __str__(self):
         return f"\033[38;5;14m{self.var} WASN'T NOTICED"
 
-class _caperror(Exception):
+class _capError(Exception):
     def __str__(self):
         return "\033[38;5;14mSYNTAX ERROR"
 
-class _jump_error(Exception):
+class _jumpError(Exception):
       def __init__(self, cond,symbol_table):
         self.cond=cond
         self.symbol_table=symbol_table
@@ -70,4 +70,12 @@ class _undefinedKeyword(Exception):
         self.line=line
         self.symbol_table=symbols
     def __str__(self):
-        return f"\033[38;5;14mUNKNOWN KEYWORD {self.line}: DEBUG CODE!\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
+        return f"\033[38;5;14mUNKNOWN KEYWORD {self.line}:\nDEBUG CODE!\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
+    
+class _debug(Exception):
+    def __init__(self, imported,line,symbols):
+        self.imported=imported
+        self.line=line
+        self.symbol_table=symbols
+    def __str__(self):
+        return f"\033[38;5;14mDEBUG CODE!\nCURRENT LINE:{self.line}\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
