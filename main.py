@@ -59,7 +59,7 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
-            if self._in_comment == True:
+            if self.in_comment == True:
                 i+=1
                 continue
 
@@ -81,14 +81,14 @@ class EsoFurCompiler:
                     if parse[1]=="Everything":
                         if parse[3] in self.imported:
                             raise _alreadyImported()
-                        module += '\n' + self.grabfile(parse[3])
+                        module += '\n' + self._grabfile(parse[3])
                         self.imported += [parse[3]]
                     else:
                         if parse[3]+'.'+parse[1] in self.imported_local:
                             raise _alreadyImported()
                         if parse[3] in self.imported_local:
                             raise _alreadyImported()
-                        module += '\n' + self.grabfile(parse[3],parse[1])
+                        module += '\n' + self._grabfile(parse[3],parse[1])
                         self.imported_local += [parse[3]+'.'+parse[1]]
                         self.imported += [parse[3]]
                 except _alreadyImported:
@@ -313,7 +313,7 @@ class EsoFurCompiler:
             num_1 **= num_2
         self.symbol_table[var_1] = num_1
 
-    def grabfile(self, module, *word):
+    def _grabfile(self, module, *word):
         with open(module+'.EsoMod', "r") as file:
             source_code = file.read()
         if len(word)==0:
