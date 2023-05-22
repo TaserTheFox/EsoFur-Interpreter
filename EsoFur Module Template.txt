@@ -20,7 +20,7 @@ if line.startswith("Bird"):
 #NEXT
 #Egg
 if line.startswith("Egg"):
-    print(self._parse_value(line.split()[1]))
+    print(parse_value(line.split()[1]))
     done()
 ----------------------
 Template below
