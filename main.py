@@ -59,7 +59,7 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
-            if self._in_comment == True:
+            if self.in_comment == True:
                 i+=1
                 continue
 
