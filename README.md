@@ -26,3 +26,5 @@ Assign to variable
 Transform variable types (maybe)
 Print to console.
 Ask user input
+
+I should probably mention that this code is not secure like, at all, it literally uses an exec as one of its command, i hold no responsibilities for any security issues or other terrible incidents that happens as a result of using this code.
