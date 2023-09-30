@@ -192,16 +192,20 @@ class EsoFurCompiler:
 
             # Ask user for input
             if line.startswith('Boop The User For'):
-                text=line.split()
+                text=line.split(' ',6)
                 var_name = text[4]
-                prompt=':'
+                prompt=''
                 if len(text) == 7:
                     if text[5]!='With':
                         raise _noBoop()
                     prompt=self._assign(text[6])+':'
                 if len(text) > 7:
                     raise _tooManyBoop()
-                value = input(prompt)
+                try:
+                  value = input(":")
+                except ValueError:
+                  sys.stdin = open(0, 'r')
+                  value = input(prompt)
                 value = self._assign(value)
                 self.symbol_table[var_name] = value
                 i+=1
