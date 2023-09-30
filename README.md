@@ -14,17 +14,19 @@ it is currently WIP
 
 
 Needs work on:
-Jump instructions
-Loop instructions (probably)
-Math anything
+Module locality being more strict
+Module template
+
+
 
 Done (maybe):
 Start program
 End program
 Declare variable
 Assign to variable
-Transform variable types (maybe)
+Transform variable types
 Print to console.
 Ask user input
-
-I should probably mention that this code is not secure like, at all, it literally uses an exec as one of its command, i hold no responsibilities for any security issues or other terrible incidents that happens as a result of using this code.
+Math
+Jump instructions
+Loop instructions
