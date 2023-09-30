@@ -94,7 +94,7 @@ class EsoFurCompiler:
                     #label = label.strip()
                     label = self._assign(label.strip())
                     if bool(condition):  # use bool() to convert the parsed condition to a boolean
-                        if label.isdigit():
+                        if str(label).isdigit():
                             i+=label
                             continue
                         i = int(self._find_label_index(lines, label))
@@ -125,7 +125,7 @@ class EsoFurCompiler:
 
             # Print
             if line.startswith('Howl'):
-                var_name = line.split(' ')[1]
+                var_name = line.split(' ',1)[1]
                 value = self._assign(var_name.strip())
                 print(value)
                 i+=1
