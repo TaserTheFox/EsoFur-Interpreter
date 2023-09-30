@@ -3,15 +3,15 @@ from exceptions import _debug,_undefinedKeyword,_alreadyImported,_importError,_n
 from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
-        self.symbol_table = {}
-        self.in_comment = False
-        self.imported = []
-        self.imported_local=[]
+        self.symbol_table = {} #variables stored
+        self.in_comment = False #multi-line comments
+        self.imported = [] #top level module names
+        self.imported_local = [] #module.keyword 
     def compile(self, code):
         lines = code.split('\n')
         i = 0
-        built=False
-        module=''
+        built = False
+        module = ''
         global done
         done = sys.exit  # Create an alias for sys.exit()
         if lines.count("Maws") != lines.count("Paws"):
@@ -23,20 +23,36 @@ class EsoFurCompiler:
             if not line:
                 i+=1
                 continue
-
-            # Check if program should run at all
-            if line == "OwO What's This?":
-                built=True
-                i+=1
+            try:
+                while not built:
+                    if line == "OwO What's This?":
+                        built = True
+                        i+=1
+                        exit(0)
+                    else:
+                        i+=1
+                        if i == len(lines):
+                            raise
+                        line = lines[i].strip()
+            except SystemExit:
                 continue
-
-            elif not built:
+            except:
                 exit(0)
+                    
+            # Check if program should run at all
+            #if line == "OwO What's This?":
+            #    built=True
+            #    i+=1
+            #    continue
+
+            #if not built:
+            #    exit(0) # raises no errors.
 
             # End of program
             if line=="QwQ":
-                exit("\033[38;5;15mfinished")
+                exit("\033[38;5;15mfinished") #this should not be present in production.
 
+            # The program needs an end command
             if "QwQ" not in lines:
                 raise _noEnd()
 
@@ -44,26 +60,26 @@ class EsoFurCompiler:
             if line.startswith('Muzzles'):
                 i+=1
                 continue
-
+                # Open
             if line == "Maws":
                 if self.in_comment == True:
                     raise _unmatchedComment()
                 self.in_comment = True
                 i+=1
                 continue
-
+                # Close
             if line == "Paws":
                 if self.in_comment == False:
                     raise _unmatchedComment()
                 self.in_comment = False
                 i+=1
                 continue
-
+                # Ignore everything within comments
             if self.in_comment == True:
                 i+=1
                 continue
 
-            # Marking a line
+            # Marking a line aka set a label
             if line.startswith("Marks"):
                 i+=1
                 continue
@@ -81,14 +97,14 @@ class EsoFurCompiler:
                     if parse[1]=="Everything":
                         if parse[3] in self.imported:
                             raise _alreadyImported()
-                        module += '\n' + self.grabfile(parse[3])
+                        module += '\n' + self._grabfile(parse[3])
                         self.imported += [parse[3]]
                     else:
                         if parse[3]+'.'+parse[1] in self.imported_local:
                             raise _alreadyImported()
                         if parse[3] in self.imported_local:
                             raise _alreadyImported()
-                        module += '\n' + self.grabfile(parse[3],parse[1])
+                        module += '\n' + self._grabfile(parse[3],parse[1])
                         self.imported_local += [parse[3]+'.'+parse[1]]
                         self.imported += [parse[3]]
                 except _alreadyImported:
@@ -97,7 +113,7 @@ class EsoFurCompiler:
                     raise _importError(parse[3])
                 i+=1
                 continue
-
+                # The actual execution of module code
             try:
                 parse_value=self._parse_value
                 for mod in self.imported_local:
@@ -156,7 +172,7 @@ class EsoFurCompiler:
             if line == '*Starts Roleplaying*':
                 i+=1
                 continue
-
+                # If you reach the end of the loop
             if line.startswith('*Stops Roleplaying Because Of') and line.endswith('*'):
                 condition = line.split(' ')[-1][:-1].strip()
                 condition = self._parse_value(condition)
@@ -166,7 +182,7 @@ class EsoFurCompiler:
                     i+=1
                 continue
 
-            # Print
+            # Printing
             if line.startswith('Howl'):
                 var_name = line.split(' ')[1]
                 value = self._assign(var_name.strip())
@@ -238,9 +254,10 @@ class EsoFurCompiler:
                 i += 1
                 continue
 
-            # UNDEFINED INSTRUCTIONS
+            # If a keyword matches nothing that is currently defined
             raise _undefinedKeyword(self.imported,line,self.symbol_table)
 
+    # Find where a marking is
     def _find_label_index(self, lines, label):
         for i, line in enumerate(lines):
             if line.startswith('Marks') and line.split(' ')[1] == label:
@@ -248,6 +265,7 @@ class EsoFurCompiler:
         raise _noLabel(label)
         #print(f"Error: Label not found: {label}")
 
+    # Find where the loop starts, hopefully supporting nested loops
     def _find_loop_start_index(self, lines, end_index):
         loop_count=0
         for i in range(end_index - 1, -1, -1):
@@ -260,6 +278,7 @@ class EsoFurCompiler:
                     loop_count-=1
         raise _noStart()
 
+    # Part of assigning a value to a variable...?
     def _assign(self, value_str):
         if value_str.isdigit():
             return int(value_str)
@@ -270,6 +289,7 @@ class EsoFurCompiler:
         else:
             return value_str
 
+    # Grab the value from a variable, or turn a """string""" to an literal int if its a number.
     def _parse_value(self, value_str):
         if value_str.isdigit():
             return int(value_str)
@@ -278,8 +298,9 @@ class EsoFurCompiler:
         try:
             return eval(value_str, {}, self.symbol_table)
         except:
-            raise _jumpError()
+            raise _debug(self.imported,line,self.symbol_table) #_jumpError(), This shound in theory be able to never trigger actually?
 
+    # Type casting
     def _cast_value(self, value, type_name):
         if type_name == 'Int':
             return int(value)
@@ -293,6 +314,7 @@ class EsoFurCompiler:
             return set(value)
         raise _castingFail()
 
+    # Doing the actual math
     def _do_maths(self, line, keyword, operation):
         var_1, var_2 = map(lambda x: x.strip(), line.split(keyword))
         num_1 = self._parse_value(var_1)
@@ -313,8 +335,9 @@ class EsoFurCompiler:
             num_1 **= num_2
         self.symbol_table[var_1] = num_1
 
-    def grabfile(self, module, *word):
-        with open(module+'.EsoMod', "r") as file:
+    # Grab the contents of the module you are importing
+    def _grabfile(self, module, *word):
+        with open(module+'.EsoFurMod', "r") as file:
             source_code = file.read()
         if len(word)==0:
             return source_code
@@ -324,8 +347,8 @@ class EsoFurCompiler:
                     if block.startswith("\n#"+word[0]):
                         return block
 
-
-with open("program.Eso") as file:
+# Grab the actual pprogram to be ran
+with open("program.EsoFur") as file:
     code = file.read()
     print(code)
     print('---------------------')

@@ -1,10 +1,11 @@
+blue='\033[38;5;14m'
 class _notImplemented(Exception):
     def __str__(self):
         return 'Not implemented'
 
 class _noEnd(Exception):
     def __str__(self):
-        return '\033[38;5;14mUNENDING PAIN AND SUFFERING'
+        return blue+'UNENDING PAIN AND SUFFERING'
 
 class _undeclaredVar(Exception):
     def __init__(self, var):
@@ -12,11 +13,11 @@ class _undeclaredVar(Exception):
         self.var = var
 
     def __str__(self):
-        return f"\033[38;5;14m{self.var} WASN'T NOTICED"
+        return blue+f"{self.var} WASN'T NOTICED"
 
 class _capError(Exception):
     def __str__(self):
-        return "\033[38;5;14mSYNTAX ERROR"
+        return blue+"SYNTAX ERROR"
 
 class _jumpError(Exception):
       def __init__(self, cond,symbol_table):
@@ -24,45 +25,45 @@ class _jumpError(Exception):
         self.symbol_table=symbol_table
 
       def __str__(self):
-        return f"\033[38;5;14mSOMETHING WENT WRONG EVALUATING: {self.cond}\nHERE IS THE CURRENT SYMBOL TABLE:\n {self.symbol_table}"
+        return blue+f"SOMETHING WENT WRONG EVALUATING: {self.cond}\nHERE IS THE CURRENT SYMBOL TABLE:\n {self.symbol_table}"
 
 class _noLabel(Exception):
     def __init__(self, label):
         self.label=label
       
     def __str__(self):
-        return f"\033[38;5;14mUNKNOWN MARKING: {self.label}"
+        return blue+f"UNKNOWN MARKING: {self.label}"
 
 class _noStart(Exception):
     def __str__(self):
-        return "\033[38;5;14mWHEN DID IT EVEN START"
+        return blue+"WHEN DID IT EVEN START"
 
 class _noBoop(Exception):
     def __str__(self):
-        return "\033[38;5;14mFAILED TO BOOP THE USER"
+        return blue+"FAILED TO BOOP THE USER"
 
 class _tooManyBoop(Exception):
     def __str__(self):
-        return "\033[38;5;14mTOO MANY BOOPS!"
+        return blue+"TOO MANY BOOPS!"
 
 class _castingFail(Exception):
     def __str__(self):
-        return "\033[38;5;14mTRANSFORMATION FAILED"
+        return blue+"TRANSFORMATION FAILED"
 
 class _unmatchedComment(Exception):
     def __str__(self):
-        return "\033[38;5;14mWHICH IS BETTER? PAWS OR MAWS?"
+        return blue+"WHICH IS BETTER? PAWS OR MAWS?"
 
 class _importError(Exception):
     def __init__(self, module):
         self.module=module
       
     def __str__(self):
-        return f"\033[38;5;14mUNKNOWN MODULE: {self.module}"
+        return blue+f"UNKNOWN MODULE: {self.module}"
 
 class _alreadyImported(Exception):
     def __str__(self):
-        return "\033[38;5;14mYOU ALREADY DRAGGED IT! WHY WASTE EFFORT?"
+        return blue+"YOU ALREADY DRAGGED IT! WHY WASTE EFFORT?"
     
 class _undefinedKeyword(Exception):
     def __init__(self, imported,line,symbols):
@@ -70,7 +71,7 @@ class _undefinedKeyword(Exception):
         self.line=line
         self.symbol_table=symbols
     def __str__(self):
-        return f"\033[38;5;14mUNKNOWN KEYWORD {self.line}:\nDEBUG CODE!\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
+        return blue+f"UNKNOWN KEYWORD {self.line}:\nDEBUG CODE!\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
     
 class _debug(Exception):
     def __init__(self, imported,line,symbols):
@@ -78,4 +79,4 @@ class _debug(Exception):
         self.line=line
         self.symbol_table=symbols
     def __str__(self):
-        return f"\033[38;5;14mDEBUG CODE!\nCURRENT LINE:{self.line}\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
+        return blue+f"DEBUG CODE!\nCURRENT LINE:{self.line}\nIMPORTED MODULES:{self.imported}\nTABLE:{self.symbol_table}"
