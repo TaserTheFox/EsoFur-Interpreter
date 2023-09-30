@@ -14,15 +14,19 @@ it is currently WIP
 
 
 Needs work on:
-Jump instructions
-Loop instructions (probably)
-Math anything
+Module locality being more strict
+Module template
+
+
 
 Done (maybe):
 Start program
 End program
 Declare variable
 Assign to variable
-Transform variable types (maybe)
+Transform variable types
 Print to console.
 Ask user input
+Math
+Jump instructions
+Loop instructions

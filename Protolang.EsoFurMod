@@ -1,0 +1,10 @@
+#NEXT
+#Bird
+if line.startswith("Bird"):
+    print("HOLY SHIT A BIRD")
+    done()
+#NEXT
+#Egg
+if line.startswith("Egg"):
+    print(self._parse_value(line.split()[1]))
+    done()
