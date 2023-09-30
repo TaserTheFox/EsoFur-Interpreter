@@ -27,6 +27,4 @@ Assign to variable
 Transform variable types
 Print to console.
 Ask user input
-Math
-Jump instructions
-Loop instructions
+
