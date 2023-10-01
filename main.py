@@ -1,6 +1,6 @@
 import math,sys
 from random import random
-from exceptions import _debug,_undefinedKeyword,_alreadyImported,_importError,_noEnd,_undeclaredVar,_capError,_jumpError,_noLabel
+from exceptions import _divideByZero,_debug,_undefinedKeyword,_alreadyImported,_importError,_noEnd,_undeclaredVar,_capError,_jumpError,_noLabel
 from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
     def __init__(self):
@@ -338,7 +338,10 @@ class EsoFurCompiler:
         if operation == '*':
             num_1 *= num_2
         if operation == '/':
-            num_1 = num_2 / num_1
+            if num_1 == 0:
+                raise _divideByZero()
+            else:
+                num_1 = num_2 / num_1
         if operation == '%':
             num_1 %= num_2
         if operation == 'l':

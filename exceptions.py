@@ -6,19 +6,36 @@ class _notImplemented(Exception):
 
 class _noEnd(Exception):
     def __str__(self):
-        return blue+'UNENDING PAIN AND SUFFERING'
-
+        case = randint(0,1)
+        if case == 0:
+            return blue+"UNENDING PAIN AND SUFFERING"
+        if case == 1:
+            return blue+"WHEN WILL IT EVER END"
 class _undeclaredVar(Exception):
     def __init__(self, var):
         super().__init__()
         self.var = var
 
     def __str__(self):
-        return blue+f"{self.var} WASN'T NOTICED"
+        case = randint(0,2)
+        if case == 0:
+            return blue+f"{self.var} WASN'T NOTICED"
+        if case == 1:
+            return blue+f"CAN'T FIND {self.var}, DID YOU CHECK THE BALLPIT?"
+        if case == 2:
+            return blue+f"MAYBE {self.var} IS AT THE HOTEL"
 
 class _capError(Exception):
     def __str__(self):
-        return blue+"SYNTAX ERROR"
+        case = randint(0,3)
+        if case == 0:
+            return blue+"i cantz undertsands u!!"
+        if case == 1:
+            return blue+"SPEAK FURRY OR DON'T SPEAK AT ALL"
+        if case == 2:
+            return blue+"TAKE OFF YOUR FURSUIT HEAD I CAN'T HEAR YOU"
+        if case == 3:
+            return blue+"SYNTAX ERROR"
 
 class _jumpError(Exception):
       def __init__(self, cond,symbol_table):
@@ -41,15 +58,29 @@ class _noStart(Exception):
 
 class _noBoop(Exception):
     def __str__(self):
-        return blue+"FAILED TO BOOP THE USER"
+        case = randint(0,2)
+        if case == 0:
+            return blue+"I CAN'T REACH YOUR SNOUT!!!"
+        if case == 1:
+            return blue+"BOOP INTERCEPTED"
+        if case == 2:
+            return blue+"FAILED TO BOOP THE USER"
 
 class _tooManyBoop(Exception):
     def __str__(self):
-        return blue+"TOO MANY BOOPS!"
+        case = randint(0,1)
+        if case == 0:
+            return blue+"SENSORY OVERLOAD"
+        if case == 1:
+            return blue+"TOO MANY BOOPS!"
 
 class _castingFail(Exception):
     def __str__(self):
-        return blue+"TRANSFORMATION FAILED"
+        case = randint(0,1)
+        if case == 0:
+            return blue+"TRANSFORMATION FAILED"
+        if case == 1:
+            return blue+"THE ETHICS COMMITTEE SAID NO"
 
 class _unmatchedComment(Exception):
     def __str__(self):
@@ -64,14 +95,22 @@ class _importError(Exception):
         if case == 0:  
             return blue+f"UNKNOWN MODULE: {self.module}"
         if case == 1:
-            return blue+f"{self.module} WASN'T AT THE CON"
+            return blue+f"{self.module} WASN'T AT THE HOTEL"
+            
 class _alreadyImported(Exception):
     def __str__(self):
-        case = randint(0,1)
+        case = randint(0,2)
         if case == 0:
             return blue+"YOU ALREADY DRAGGED IT! WHY WASTE EFFORT?"
         if case == 1:
             return blue+"TOO TIRED"
+        if case == 2:
+            return blue+"I ALREADY PAID FOR THIS CON"
+        
+class _divideByZero(Exception):
+    def __str__(self):
+        return blue+"Sorry, I was in the bathroom. What'd I mi- Where'd... Where is everyone?"
+
 class _undefinedKeyword(Exception):
     def __init__(self, imported,line,symbols):
         self.imported=imported
