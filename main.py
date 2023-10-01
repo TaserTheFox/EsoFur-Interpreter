@@ -1,4 +1,5 @@
 import math,sys
+from random import random
 from exceptions import _debug,_undefinedKeyword,_alreadyImported,_importError,_noEnd,_undeclaredVar,_capError,_jumpError,_noLabel
 from exceptions import _noStart,_noBoop,_tooManyBoop,_castingFail,_unmatchedComment
 class EsoFurCompiler:
@@ -190,6 +191,13 @@ class EsoFurCompiler:
                 i+=1
                 continue
 
+            # Random Float
+            if line.startswith('Eyedropper A Sparkledog At'):
+                var_name = line.split(' ')[4]
+                self.symbol_table[var_name] = random()
+                i+=1
+                continue
+
             # Ask user for input
             if line.startswith('Boop The User For'):
                 text=line.split(' ',6)
@@ -351,7 +359,7 @@ class EsoFurCompiler:
                     if block.startswith("\n#"+word[0]):
                         return block
 
-# Grab the actual pprogram to be ran
+# Grab the actual program to be ran
 with open("program.EsoFur") as file:
     code = file.read()
     print(code)
