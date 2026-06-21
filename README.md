@@ -1,4 +1,9 @@
 # EsoFur-Interpreter
+
+Heyo! it's uh, 2026, and im rewriting this entier project from scratch! Admittidly this entire project was vibe coded, with oversight from me, and it SHOWS. The rewrite is here, [Esofur Rewritten](https://github.com/TaserTheFox/EsoFur-Rewritten), and thus this will be archived!
+
+--------------------------------------
+
 EsoFur language thing
 Heya
 
